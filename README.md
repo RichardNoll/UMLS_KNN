@@ -1,5 +1,6 @@
 
 README: Similar CUI Finder
+--
 Overview
 This Python Script provides a straightforward and interactive way to find semantically similar Concept Unique Identifiers (CUIs) from the Unified Medical Language System (UMLS) based on precomputed embeddings. Utilizing a combination of Python, Pandas for data handling, Faiss for efficient similarity search, and t-SNE for dimensionality reduction, it offers an efficient tool for exploring relationships between medical concepts.
 
