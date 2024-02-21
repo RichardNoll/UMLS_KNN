@@ -2,14 +2,14 @@ import pandas as pd
 import numpy as np
 import faiss
 
-# Funktion, um die Embeddings und CUIs aus der CSV-Datei zu laden
+# Function to load the embeddings and CUIs from the CSV file
 def load_embeddings(csv_file_path):
     df = pd.read_csv(csv_file_path, header=None)
     df.columns = ['CUI'] + [f'feature_{i}' for i in range(1, 51)]
     embeddings = df.drop('CUI', axis=1).values
     return df, embeddings
 
-# Funktion, um die Embeddings zu clustern
+# Function to cluster the embeddings
 def cluster_embeddings(embeddings, n_clusters=100):
     d = embeddings.shape[1]
     kmeans = faiss.Kmeans(d, n_clusters, niter=20, verbose=False)
@@ -17,7 +17,7 @@ def cluster_embeddings(embeddings, n_clusters=100):
     _, cluster_assignments = kmeans.index.search(embeddings.astype('float32'), 1)
     return kmeans, cluster_assignments
 
-# Funktion, um ähnliche CUIs in einem Cluster zu finden
+# Function to find similar CUIs in a cluster
 def find_similar_cuis_in_cluster(target_cui, embeddings, df, cluster_assignments, top_n=5):
     target_index = df.index[df['CUI'] == target_cui].tolist()[0]
     target_cluster = cluster_assignments[target_index][0]
@@ -34,18 +34,18 @@ def find_similar_cuis_in_cluster(target_cui, embeddings, df, cluster_assignments
     
     return similar_cuis[:top_n]
 
-# Laden der Embeddings
-csv_file_path = input("Geben Sie den Pfad zur CSV-Datei ein: ")  # Pfad zur CSV-Datei
+# Loading the embeddings
+csv_file_path = 'embeddings.csv' 
 df, embeddings = load_embeddings(csv_file_path)
 
-# Clustern der Embeddings
+# Clustering the embeddings
 kmeans, cluster_assignments = cluster_embeddings(embeddings)
 
-# Eingabe durch den Benutzer
+# Input by the user
 target_cui = input("Geben Sie das Ziel-CUI ein: ")
 top_n = int(input("Wie viele ähnliche CUIs möchten Sie anzeigen? "))
 
-# Finden und Anzeigen ähnlicher CUIs
+# Find and display similar CUIs
 similar_cuis = find_similar_cuis_in_cluster(target_cui, embeddings, df, cluster_assignments, top_n)
 print(f"Top {top_n} ähnliche CUIs zu {target_cui}:")
 for cui, similarity in similar_cuis:
